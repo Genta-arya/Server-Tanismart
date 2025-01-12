@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Transaksi {
+  id        Int      @id @default(autoincrement())
+  id_user   String   // Menggunakan UUID untuk id_user
+  user      Auth     @relation(fields: [id_user], references: [id])
+  id_produk Int
+  produk    Produk   @relation(fields: [id_produk], references: [id])
+  jumlah    Int
+  alamat    String
+  notaFile String? @default("-")
+  total     Float
+  status    String
+  createdAt DateTime @default(now())
+}
+
+model Produk {
+  id        Int         @id @default(autoincrement())
+  nama      String
+  harga     Float
+  desc      String
+  stok      Int
+  ongkir    Int      @default(5000)
+  images    Image[]
+  transaksi Transaksi[]
+  createdAt DateTime    @default(now())
+}
+
+model Auth {
+  id        String     @id @default(uuid())  // Menggunakan UUID
+  nama      String
+  email     String     @unique
+  password  String
+  role      String?    @default("user")
+  status    Boolean    @default(false)
+  transaksi Transaksi[]
+}
+
+model Image {
+  id        Int    @id @default(autoincrement())
+  id_produk Int
+  url       String
+  produk    Produk @relation(fields: [id_produk], references: [id], onDelete: Cascade)
+}
