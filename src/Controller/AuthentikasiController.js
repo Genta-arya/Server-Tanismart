@@ -25,7 +25,7 @@ export const register = async (req, res) => {
           data: {
             status: true,
           },
-        })
+        });
         return res
           .status(201)
           .json({ message: "User already exists , not created" });
@@ -173,6 +173,41 @@ export const updateProfil = async (req, res) => {
     return res
       .status(200)
       .json({ message: "User updated successfully", data: updatedUser });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+export const getAlluser = async (req, res) => {
+  try {
+    const data = await prisma.auth.findMany({
+      select: {
+        nama: true,
+        email: true,
+        role: true,
+        transaksi: {
+          select: {
+            alamat: true,
+            jumlah: true,
+            total: true,
+            notaFile: true,
+            produk: {
+              select: {
+                nama: true,
+
+                images: {
+                  select: {
+                    url: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return res.status(200).json({ data: data });
   } catch (error) {
     return res.status(500).json({ message: "Internal Server Error" });
   }

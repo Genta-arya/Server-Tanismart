@@ -20,6 +20,7 @@ app.use(
 
 app.use('/images', express.static(path.join(path.resolve(), 'public/images')));
 app.use('/nota', express.static(path.join(path.resolve(), 'public/nota')));
+app.use('/laporan', express.static(path.join(path.resolve(), 'public/laporan')));
 app.use("/api/auth", Routes);
 app.use("/api/produk", RoutesProduk);
 app.use("/api/transaksi", RoutesTransaksi);

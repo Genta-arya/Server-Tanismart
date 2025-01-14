@@ -5,6 +5,7 @@ import path from "path";
 import fs from "fs";
 import { handleUnlinkImage, unlinkDeleteImage } from "../Utils/Utils.js";
 export const createProduk = async (req, res) => {
+
   uploadImage(req, res, async (err) => {
     if (err instanceof multer.MulterError) {
       console.error(err);
@@ -16,6 +17,8 @@ export const createProduk = async (req, res) => {
     }
 
     const { nama, harga, desc, stok } = req.body;
+    
+  console.log(req.body)
     const image = req.file ? `/images/${req.file.filename}` : null;
 
     if (!nama || !harga || !desc || !stok || !image) {
@@ -164,6 +167,9 @@ export const deleteProduk = async (req, res) => {
     if (!produk) {
       return res.status(404).json({ message: "Produk tidak ditemukan." });
     }
+    await prisma.transaksi.deleteMany({
+      where: { id_produk: parseInt(id) },
+    });
 
     await prisma.produk.delete({
       where: { id: parseInt(id) },
@@ -184,15 +190,14 @@ export const deleteProduk = async (req, res) => {
   }
 };
 
-
 export const getProduk = async (req, res) => {
   try {
     const produk = await prisma.produk.findMany({
       include: {
         images: {
-          select:{
-            url: true
-          }
+          select: {
+            url: true,
+          },
         },
       },
     });

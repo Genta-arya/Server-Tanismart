@@ -24,12 +24,10 @@ const storage = multer.diskStorage({
 const fileFilter = (req, file, cb) => {
   const fileTypes = /jpeg|jpg|png|gif/;
   const mimeType = fileTypes.test(file.mimetype);
+  console.log("Mime type file:", file.mimetype); // Log mime type file yang diterima
 
-  if (mimeType) {
-    return cb(null, true);
-  } else {
-    cb(new Error("Hanya gambar yang diperbolehkan!"), false);
-  }
+  // jangan ada validasi
+  return cb(null, true);
 };
 
 export const upload = multer({
@@ -38,5 +36,3 @@ export const upload = multer({
   fileFilter: fileFilter,
 });
 export const uploadImage = upload.single("image");
-
-
